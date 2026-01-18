@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Realtime Scanner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="scanner-container">
+        <header>
+            <h1>AI Scanner</h1>
+            <p>Realtime Barcode & QR Detection</p>
+        </header>
+
+        <div class="video-wrapper">
+            <video id="video" autoplay playsinline></video>
+            <div class="overlay">
+                <div class="scan-line"></div>
+                <div class="corner top-left"></div>
+                <div class="corner top-right"></div>
+                <div class="corner bottom-left"></div>
+                <div class="corner bottom-right"></div>
+            </div>
+            <canvas id="canvas" style="display:none;"></canvas>
+        </div>
+
+        <div class="results-panel" id="results-panel">
+            <div class="panel-header">Scan Results</div>
+            <div id="results-list" class="results-list">
+                <p class="placeholder">Point camera at a code</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="toggle-camera" class="btn-primary">Start Camera</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
