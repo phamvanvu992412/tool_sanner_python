@@ -5,11 +5,12 @@ class AI_Scanner {
         this.canvas = options.canvas
         this.context = options.context;
         this.object_value = options.object_value;
-        this.socket = io('https://scanner.24hlaptop.com');
+        // this.socket = io('https://scanner.24hlaptop.com');
+        this.socket = io('http://localhost:5000');
         this.toggleBtn = options.toggleBtn;
         this.stream = null;
         this.isScanning = false;
-
+    
         this.setupEventListeners();
         this.setupSocket();
     }
@@ -88,13 +89,12 @@ class AI_Scanner {
         }
 
         results.forEach(result => {
-            console.log(result);
             if (this.object_value.tagName == 'INPUT' || this.object_value.tagName == 'TEXTAREA') {
                 this.object_value.value = result.data;
             } else {
                 this.object_value.innerText = result.data;
-                this.stop();
             }
+            this.stop();
         });
     }
 }
