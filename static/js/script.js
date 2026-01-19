@@ -20,8 +20,12 @@ class AI_Scanner {
             this.toggleBtn.addEventListener('click', () => {
                 if (this.isScanning) {
                     this.stop();
+                    if(this.container){
+                        this.container.style.display = 'none !important';
+                    }
                 } else {
                     this.start();
+                    this.container.style.display = 'block !important';
                 }
             });
         }
@@ -67,6 +71,7 @@ class AI_Scanner {
             this.isScanning = false;
             if(this.container){
                 this.container.style.display = 'none !important';
+                this.container.classList.add('d-none');
             }
             
         }
