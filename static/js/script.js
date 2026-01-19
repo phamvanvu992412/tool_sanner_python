@@ -1,95 +1,94 @@
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const context = canvas.getContext('2d');
-const resultsList = document.getElementById('results-list');
-const toggleBtn = document.getElementById('toggle-camera');
+class AI_Scanner {
+    constructor(options) {
+        this.video = options.video
+        this.canvas = options.canvas
+        this.context = options.context;
+        this.object_value = options.object_value;
+        this.socket = io();
+        this.toggleBtn = options.toggleBtn;
+        this.stream = null;
+        this.isScanning = false;
 
-let stream = null;
-let isScanning = false;
-let socket = io();
+        this.setupEventListeners();
+        this.setupSocket();
+    }
 
-// Camera management
-async function startCamera() {
-    try {
-        stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: 'environment',
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
+    setupEventListeners() {
+        if (this.toggleBtn) {
+            this.toggleBtn.addEventListener('click', () => {
+                if (this.isScanning) {
+                    this.stop();
+                } else {
+                    this.start();
+                }
+            });
+        }
+    }
+
+    setupSocket() {
+        this.socket.on('results', (results) => {
+            if (results.length > 0) {
+                this.handleResults(results);
             }
         });
-        video.srcObject = stream;
-        toggleBtn.textContent = 'Stop Camera';
-        isScanning = true;
-
-        video.onloadedmetadata = () => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            scanFrame();
-        };
-    } catch (err) {
-        console.error("Error accessing camera: ", err);
-        alert("Cannot access camera. Please check permissions.");
     }
-}
 
-function stopCamera() {
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        video.srcObject = null;
-        toggleBtn.textContent = 'Start Camera';
-        isScanning = false;
+    async start() {
+        try {
+            this.stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'environment',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }
+            });
+            this.video.srcObject = this.stream;
+            // this.toggleBtn.textContent = 'Stop Camera';
+            this.isScanning = true;
+
+            this.video.onloadedmetadata = () => {
+                this.canvas.width = this.video.videoWidth;
+                this.canvas.height = this.video.videoHeight;
+                this.scanFrame();
+            };
+        } catch (err) {
+            console.error("Error accessing camera: ", err);
+            alert("Cannot access camera. Please check permissions.");
+        }
     }
-}
 
-toggleBtn.addEventListener('click', () => {
-    if (isScanning) {
-        stopCamera();
-    } else {
-        startCamera();
+    stop() {
+        if (this.stream) {
+            this.stream.getTracks().forEach(track => track.stop());
+            this.video.srcObject = null;
+            // this.toggleBtn.textContent = 'Start Camera';
+            this.isScanning = false;
+        }
     }
-});
 
-// Frame processing
-function scanFrame() {
-    if (!isScanning) return;
+    scanFrame() {
+        if (!this.isScanning) return;
 
-    // We can also sharpen the image on the client side using canvas if needed, 
-    // but the backend enhancement is more powerful.
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageData = canvas.toDataURL('image/jpeg', 0.8);
+        this.context.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        const imageData = this.canvas.toDataURL('image/jpeg', 0.8);
 
-    socket.emit('image', imageData);
+        this.socket.emit('image', imageData);
 
-    // Optimized interval for high quality
-    setTimeout(scanFrame, 400);
-}
+        setTimeout(() => this.scanFrame(), 400);
+    }
 
-// Result handling
-socket.on('results', (results) => {
-    if (results.length > 0) {
-        if (resultsList.querySelector('.placeholder')) {
-            resultsList.innerHTML = '';
+    handleResults(results) {
+        if (this.resultsList && this.resultsList.querySelector('.placeholder')) {
+            this.resultsList.innerHTML = '';
         }
 
         results.forEach(result => {
-            const existing = Array.from(resultsList.children).find(el =>
-                el.innerText.includes(result.data)
-            );
-
-            if (!existing) {
-                const item = document.createElement('div');
-                item.className = 'result-item';
-                item.innerHTML = `
-                    <div class="result-data">${result.data}</div>
-                    <div class="result-type">${result.type}</div>
-                `;
-                resultsList.prepend(item);
-
-                if (resultsList.children.length > 5) {
-                    resultsList.removeChild(resultsList.lastChild);
-                }
+            if (this.object_value.tagName == 'INPUT' || this.object_value.tagName == 'TEXTAREA') {
+                this.object_value.value = result.data;
+            } else {
+                this.object_value.innerText = result.data;
+                this.stop();
             }
         });
     }
-});
+}

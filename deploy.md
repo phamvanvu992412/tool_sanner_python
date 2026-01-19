@@ -13,6 +13,7 @@ sudo apt install python3-pip python3-venv libzbar0 nginx -y
 ## 2. Thiết lập Project
 1. Clone code lên server.
 2. Tạo môi trường ảo (Virtual Environment):
+-> cd đến thư mục chứ code chạy các lệnh bên dưới
 ```bash
 python3 -m venv venv
 source venv/bin/activate

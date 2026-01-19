@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
+
     <div class="scanner-container">
         <header>
             <h1>AI Scanner</h1>
@@ -28,7 +31,10 @@
         </div>
 
         <div class="results-panel" id="results-panel">
-            <div class="panel-header">Scan Results</div>
+            <div class="panel-header">Direct Input Result</div>
+            <input type="text" id="scanner-input" class="scanner-input-field" placeholder="Result will appear here...">
+
+            <div class="panel-header" style="margin-top: 15px;">Scan History</div>
             <div id="results-list" class="results-list">
                 <p class="placeholder">Point camera at a code</p>
             </div>
@@ -40,5 +46,17 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        // Init scanner via Constructor
+        const scanner = new AI_Scanner({
+            videoId: document.getElementById('video'),
+            canvasId: document.getElementById('canvas'),
+            resultsListId: document.getElementById('results-list'),
+            targetInputId: document.getElementById('scanner-input'),
+            toggleBtnId: document.getElementById('toggle-camera'),
+            object_value: document.getElementById('scanner-input')
+        });
+    </script>
 </body>
+
 </html>
