@@ -10,7 +10,7 @@ class AI_Scanner {
         this.toggleBtn = options.toggleBtn;
         this.stream = null;
         this.isScanning = false;
-    
+        this.callback = options.callback;
         this.setupEventListeners();
         this.setupSocket();
     }
@@ -98,6 +98,9 @@ class AI_Scanner {
                 this.object_value.value = result.data;
             } else {
                 this.object_value.innerText = result.data;
+            }
+            if(this.callback && typeof this.callback === 'function') {
+                this.callback(result.data);
             }
             this.stop();
         });
