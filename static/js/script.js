@@ -1,5 +1,6 @@
 class AI_Scanner {
     constructor(options) {
+        this.container = options.container
         this.video = options.video
         this.canvas = options.canvas
         this.context = options.context;
@@ -63,6 +64,10 @@ class AI_Scanner {
             this.video.srcObject = null;
             // this.toggleBtn.textContent = 'Start Camera';
             this.isScanning = false;
+            if(this.container){
+                this.container.style.display = 'none !important';
+            }
+            
         }
     }
 
