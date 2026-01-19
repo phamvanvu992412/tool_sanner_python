@@ -49,11 +49,10 @@
     <script>
         // Init scanner via Constructor
         const scanner = new AI_Scanner({
-            videoId: document.getElementById('video'),
-            canvasId: document.getElementById('canvas'),
-            resultsListId: document.getElementById('results-list'),
-            targetInputId: document.getElementById('scanner-input'),
-            toggleBtnId: document.getElementById('toggle-camera'),
+            video: document.getElementById('video'),
+            canvas: document.getElementById('canvas'),
+            context: document.getElementById('canvas').getContext('2d'),
+            toggleBtn: document.getElementById('toggle-camera'),
             object_value: document.getElementById('scanner-input')
         });
     </script>
